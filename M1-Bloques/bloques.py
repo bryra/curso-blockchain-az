@@ -92,5 +92,30 @@ class Blockchain:
 
 # Parte 2 - minando de un Bloque de la Cadena
 
+#Crear una aplicacion web con Flask - Crear una Aplicacion distribuida
+#Documnetacion de Flask: https://flask.palletsprojects.com/en/2.1.x/quickstart/
+# - Eliminar un block
+# - Obtener todos los bloques
+app = Flask(__name__)
 
+#Crear una Blockchain
+blockchain = Blockchain()
+
+
+#Minar un nuevo Bllque
+@app.route('/mine_block', methods=['GET'])
+def mine_block():
+    previous_block = blockchain.get_previous_block()
+    previous_proof = previous_block['proof']
+    proof = blockchain.proof_of_work(previous_proof)
+    previous_hash = blockchain.hash(previous_block)
+    block = blockchain.create_block(proof, previous_hash)
+    response = {
+        'message': 'Uruguay noma! Has minado un nuvo Bloque!',
+        'index': block['index'],
+        'timestamp': block['timestamp'],
+        'proof': block['proof'],
+        'previos_hash': block['previos_hash'],
+        }
+    return jsonify(response), 200
 
