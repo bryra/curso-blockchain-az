@@ -61,5 +61,36 @@ class Blockchain:
         
         return new_proof
 
+    #############################################################
+    #Funcion que devuelve el block actual
+    #############################################################
+    def hash(self, block):
+        encode_block = json.dump(block, sort_keys = True).encode()
+        return hashlib.sha256(encode_block).hexdigest()
+    
+    #############################################################
+    #Funcion que valida si la cadena de bloque es valido
+    #############################################################
+    def is_chain_valid(self, chain):
+        previous_block = chain[0]
+        block_index = 1
+        while block_index < len(chain):
+            block = chain[block_index]
+            if block['previous_hash'] != self.hash(previous_block):
+                return False
+            previous_block = previous_block['proof']
+            proof = block['proof']
+            hash_operation = hashlib.sha256(str(proof**2 - previous_block**2).encode()).hexdigest()
+            if hash_operation[:4] != '0000':
+                return False
+            previous_block = block
+            block_index += 1
+        return True
+
+
+
 
 # Parte 2 - minando de un Bloque de la Cadena
+
+
+
