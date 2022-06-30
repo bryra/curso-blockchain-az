@@ -5,11 +5,11 @@ Created on Tue Jun 28 20:26:21 2022
 @author: Bryan
 """
 
-#Modulo 1 - Crear una cadena de Bloques
+# Modulo 1 - Crear una cadena de Bloques
 
-#Instalar con Anaconda Pronpt el comando >> pip install Flask==0.12.2
+# Instalar con Anaconda Pronpt el comando >> pip install Flask==0.12.2
 
-#Instalar las Librerias
+# Instalar las Librerias
 import datetime
 import hashlib
 import json
@@ -19,14 +19,14 @@ from flask import Flask, jsonify
 class Blockchain:
     
     #############################################################
-    #Funcion para inicializar el bloque
+    # Funcion para inicializar el bloque
     #############################################################
     def __init__(self):
         self.chain = []
         self.create_block(proof = 1, previous_hash = '0')
         
     #############################################################
-    #Funcion para Crear el Bloque
+    # Funcion para Crear el Bloque
     #############################################################
     def create_block(self, proof, previous_hash):
         block = {
@@ -46,7 +46,7 @@ class Blockchain:
         return self.chain[-1]
     
     #############################################################
-    #Esta es la funcion de Minado para el Bloque
+    # Esta es la funcion de Minado para el Bloque
     #############################################################
     def proof_of_work(self, previous_proof):
         new_proof = 1
@@ -62,14 +62,14 @@ class Blockchain:
         return new_proof
 
     #############################################################
-    #Funcion que devuelve el block actual
+    # Funcion que devuelve el block actual
     #############################################################
     def hash(self, block):
         encode_block = json.dump(block, sort_keys = True).encode()
         return hashlib.sha256(encode_block).hexdigest()
     
     #############################################################
-    #Funcion que valida si la cadena de bloque es valido
+    # Funcion que valida si la cadena de bloque es valido
     #############################################################
     def is_chain_valid(self, chain):
         previous_block = chain[0]
@@ -92,17 +92,27 @@ class Blockchain:
 
 # Parte 2 - minando de un Bloque de la Cadena
 
-#Crear una aplicacion web con Flask - Crear una Aplicacion distribuida
-#Documnetacion de Flask: https://flask.palletsprojects.com/en/2.1.x/quickstart/
-# - Eliminar un block
-# - Obtener todos los bloques
+#############################################################
+# Crear una aplicacion web con Flask
+# Documnetacion de Flask: 
+# https://flask.palletsprojects.com/en/2.1.x/quickstart/
+# Running on http://127.0.0.1:5000/
+# 1. Funcion para Minar bloques
+# 2. Funcion para Obtener los Bloques
+#############################################################
 app = Flask(__name__)
 
-#Crear una Blockchain
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+
+#############################################################
+# Crear una Blockchain
+#############################################################
 blockchain = Blockchain()
 
 
-#Minar un nuevo Bllque
+#############################################################
+# Minar un nuevo Bllque
+#############################################################
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
     previous_block = blockchain.get_previous_block()
@@ -118,4 +128,21 @@ def mine_block():
         'previos_hash': block['previos_hash'],
         }
     return jsonify(response), 200
+
+#############################################################
+# Obtener la cadena de Bloqueas completa
+#############################################################
+@app.route('/get_chain', methods=['GET'])
+def get_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+        }
+    return jsonify(response), 200
+    
+    
+#############################################################
+# Ejecutar la App en una ruta accecible dentro de la red
+#############################################################
+app.run(host = '0.0.0.0', port = 5000)
 
