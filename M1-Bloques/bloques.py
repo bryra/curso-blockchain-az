@@ -65,8 +65,8 @@ class Blockchain:
     # Funcion que devuelve el block actual
     #############################################################
     def hash(self, block):
-        encode_block = json.dump(block, sort_keys = True).encode()
-        return hashlib.sha256(encode_block).hexdigest()
+        encoded_block = json.dumps(block, sort_keys = True).encode()
+        return hashlib.sha256(encoded_block).hexdigest()
     
     #############################################################
     # Funcion que valida si la cadena de bloque es valido
@@ -125,7 +125,7 @@ def mine_block():
         'index': block['index'],
         'timestamp': block['timestamp'],
         'proof': block['proof'],
-        'previos_hash': block['previos_hash'],
+        'previous_hash': block['previous_hash'],
         }
     return jsonify(response), 200
 
