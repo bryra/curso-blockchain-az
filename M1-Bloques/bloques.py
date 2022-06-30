@@ -121,7 +121,7 @@ def mine_block():
     previous_hash = blockchain.hash(previous_block)
     block = blockchain.create_block(proof, previous_hash)
     response = {
-        'message': 'Uruguay noma! Has minado un nuvo Bloque!',
+        'message': 'Uruguay noma! Has minado un nuevo Bloque!',
         'index': block['index'],
         'timestamp': block['timestamp'],
         'proof': block['proof'],
